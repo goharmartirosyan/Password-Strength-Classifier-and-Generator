@@ -12,6 +12,7 @@ def generate_password(length=12, use_upper=True, use_lower=True, use_digits=True
         characters += string.digits
     if use_symbols:
         characters += string.punctuation
+        
 
     if not characters:
         raise ValueError("At least one character set must be selected.")
