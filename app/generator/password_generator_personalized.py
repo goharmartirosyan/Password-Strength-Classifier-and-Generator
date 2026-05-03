@@ -1,13 +1,18 @@
 import secrets
 
 SUBSTITUTIONS = {
-    'a': '4',
+    'a': '@',
+    'b': '8',
+    'c': '(',
     'e': '3',
-    'i': '1',
+    'g': '9',
+    'i': '!',
+    'l': '1',
     'o': '0',
     's': '$',
-    'k': 'x',  
-    't': '7'
+    't': '+',
+    'x': '%',
+    'z': '2',
 }
 
 def transform_word(word):
@@ -40,7 +45,7 @@ def generate_personalized_password(fruit, street, number):
     part1 = transform_word(fruit)
     part2 = transform_word(street.title())
 
-    return f"{part1}{symbol}{part2}{number}"
+    return f"{part1}{symbol}{part2}{symbol}{number}"
 
 
 if __name__ == "__main__":
