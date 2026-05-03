@@ -7,7 +7,7 @@ A web application for classifying password strength and generating secure passwo
 - **Classifier** — analyzes a password and returns a strength score, entropy, and suggestions for improvement
 - **Random Generator** — generates a secure random password with customizable length and character types (uppercase, lowercase, digits, symbols)
 - **Personalized Generator** — generates a memorable password based on a fruit, a street name, and a number
-- **Leak Detection** — checks passwords against real-world leaked password databases
+- **Reuse Detection** — checks passwords against local password lists and warns when a password looks reused or already exposed
 
 ## Requirements
 
@@ -26,9 +26,9 @@ A web application for classifying password strength and generating secure passwo
    cd Password-Strength-Classifier-and-Generator
    ```
 
-3. Install Flask:
+3. Install the required package:
    ```
-   pip3 install flask
+   pip3 install -r requirements.txt
    ```
 
 ## Running the App
@@ -75,8 +75,30 @@ app/
 | POST | `/generate` | Generates a random password |
 | POST | `/generate-personalized` | Generates a personalized password |
 | GET | `/health` | Health check |
-Collapse
 
+## How Strength Is Measured
+
+The classifier combines several checks:
+
+- password length
+- character variety: lowercase, uppercase, digits, and symbols
+- estimated entropy
+- whether the password appears in local password lists
+- repeated characters and common patterns such as `1234`, `qwerty`, or `password`
+
+The entropy value is an estimate based on password length and the character groups used. It is useful as a signal, but it is not perfect because human-created passwords often follow patterns.
+
+## Privacy Note
+
+This project is intended to run locally. Passwords are checked on your own machine and are not sent to an external service.
+
+The web API does not return raw leak-match details. It only returns whether a password appears compromised and how many matches were found.
+
+## Limitations
+
+- The strength score is rule-based, so it may not catch every weak human pattern.
+- The local password lists are only as complete as the files placed in `app/data`.
+- This is a learning/project tool, not a replacement for a professional password manager or security audit.
 
 
 
