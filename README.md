@@ -94,11 +94,6 @@ This project is intended to run locally. Passwords are checked on your own machi
 
 The web API does not return raw leak-match details. It only returns whether a password appears compromised and how many matches were found.
 
-## Limitations
-
-- The strength score is rule-based, so it may not catch every weak human pattern.
-- The local password lists are only as complete as the files placed in `app/data`.
-- This is a learning/project tool, not a replacement for a professional password manager or security audit.
 
 
 
