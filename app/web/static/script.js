@@ -1,33 +1,31 @@
-const elements = {
-  passwordInput: document.querySelector("#passwordInput"),
-  classifyBtn: document.querySelector("#classifyBtn"),
-  togglePasswordBtn: document.querySelector("#togglePasswordBtn"),
-  lengthInput: document.querySelector("#lengthInput"),
-  upperInput: document.querySelector("#upperInput"),
-  lowerInput: document.querySelector("#lowerInput"),
-  digitsInput: document.querySelector("#digitsInput"),
-  symbolsInput: document.querySelector("#symbolsInput"),
-  generateBtn: document.querySelector("#generateBtn"),
-  generatedOutput: document.querySelector("#generatedOutput"),
-  copyGeneratedBtn: document.querySelector("#copyGeneratedBtn"),
-  fruitInput: document.querySelector("#fruitInput"),
-  streetInput: document.querySelector("#streetInput"),
-  numberInput: document.querySelector("#numberInput"),
-  passwordError: document.querySelector("#passwordError"),
-  fruitError: document.querySelector("#fruitError"),
-  streetError: document.querySelector("#streetError"),
-  numberError: document.querySelector("#numberError"),
-  personalizedBtn: document.querySelector("#personalizedBtn"),
-  personalizedOutput: document.querySelector("#personalizedOutput"),
-  copyPersonalizedBtn: document.querySelector("#copyPersonalizedBtn"),
-  labelOutput: document.querySelector("#labelOutput"),
-  scoreMeter: document.querySelector("#scoreMeter"),
-  scoreOutput: document.querySelector("#scoreOutput"),
-  entropyOutput: document.querySelector("#entropyOutput"),
-  lengthOutput: document.querySelector("#lengthOutput"),
-  reasonsOutput: document.querySelector("#reasonsOutput"),
-  suggestionsOutput: document.querySelector("#suggestionsOutput")
-};
+const passwordInput = document.getElementById("passwordInput");
+const classifyBtn = document.getElementById("classifyBtn");
+const togglePasswordBtn = document.getElementById("togglePasswordBtn");
+const lengthInput = document.getElementById("lengthInput");
+const upperInput = document.getElementById("upperInput");
+const lowerInput = document.getElementById("lowerInput");
+const digitsInput = document.getElementById("digitsInput");
+const symbolsInput = document.getElementById("symbolsInput");
+const generateBtn = document.getElementById("generateBtn");
+const generatedOutput = document.getElementById("generatedOutput");
+const copyGeneratedBtn = document.getElementById("copyGeneratedBtn");
+const fruitInput = document.getElementById("fruitInput");
+const streetInput = document.getElementById("streetInput");
+const numberInput = document.getElementById("numberInput");
+const passwordError = document.getElementById("passwordError");
+const fruitError = document.getElementById("fruitError");
+const streetError = document.getElementById("streetError");
+const numberError = document.getElementById("numberError");
+const personalizedBtn = document.getElementById("personalizedBtn");
+const personalizedOutput = document.getElementById("personalizedOutput");
+const copyPersonalizedBtn = document.getElementById("copyPersonalizedBtn");
+const labelOutput = document.getElementById("labelOutput");
+const scoreMeter = document.getElementById("scoreMeter");
+const scoreOutput = document.getElementById("scoreOutput");
+const entropyOutput = document.getElementById("entropyOutput");
+const lengthOutput = document.getElementById("lengthOutput");
+const reasonsOutput = document.getElementById("reasonsOutput");
+const suggestionsOutput = document.getElementById("suggestionsOutput");
 
 const PASSWORD_MAX_LENGTH = 256;
 const WORD_MAX_LENGTH = 40;
@@ -54,7 +52,6 @@ function renderList(target, items, emptyText) {
     target.appendChild(li);
     return;
   }
-
   items.forEach((item) => {
     const li = document.createElement("li");
     li.textContent = item;
@@ -88,8 +85,8 @@ function keepDigits(input) {
   return original !== input.value;
 }
 
-function setFieldError(input, errorElement, message) {
-  errorElement.textContent = message;
+function setFieldError(input, errorEl, message) {
+  errorEl.textContent = message;
   input.classList.toggle("invalid", Boolean(message));
 }
 
@@ -98,13 +95,13 @@ function setCopyReady(button, isReady) {
   button.textContent = "Copy";
 }
 
-async function copyTextFromOutput(outputElement, button) {
-  const text = outputElement.textContent.trim();
+async function copyTextFromOutput(outputEl, button) {
+  const text = outputEl.textContent.trim();
   if (!text) return;
 
   await navigator.clipboard.writeText(text);
   button.textContent = "Copied";
-  window.setTimeout(() => {
+  setTimeout(() => {
     if (!button.disabled) {
       button.textContent = "Copy";
     }
@@ -112,81 +109,75 @@ async function copyTextFromOutput(outputElement, button) {
 }
 
 function validatePasswordInput() {
-  const password = elements.passwordInput.value;
+  const password = passwordInput.value;
   if (!password) {
-    setFieldError(elements.passwordInput, elements.passwordError, "Password is required");
+    setFieldError(passwordInput, passwordError, "Password is required");
     return null;
   }
   if (password.length > PASSWORD_MAX_LENGTH) {
-    setFieldError(elements.passwordInput, elements.passwordError, "Maximum 256 characters");
+    setFieldError(passwordInput, passwordError, "Maximum 256 characters");
     return null;
   }
-
-  setFieldError(elements.passwordInput, elements.passwordError, "");
+  setFieldError(passwordInput, passwordError, "");
   return password;
 }
 
-function validateWordInput(input, errorElement, fieldName) {
+function validateWordInput(input, errorEl, fieldName) {
   const value = input.value.trim();
   if (!value) {
-    setFieldError(input, errorElement, `${fieldName} is required`);
+    setFieldError(input, errorEl, `${fieldName} is required`);
     return null;
   }
   if (value.length > WORD_MAX_LENGTH) {
-    setFieldError(input, errorElement, "Maximum 40 characters");
+    setFieldError(input, errorEl, "Maximum 40 characters");
     return null;
   }
   if (!/^[A-Za-z ]+$/.test(value)) {
-    setFieldError(input, errorElement, "Letters only");
+    setFieldError(input, errorEl, "Letters only");
     return null;
   }
-
-  setFieldError(input, errorElement, "");
+  setFieldError(input, errorEl, "");
   return value;
 }
 
-function validateLettersInput(input, errorElement, fieldName) {
+function validateLettersInput(input, errorEl, fieldName) {
   const value = input.value.trim();
   if (!value) {
-    setFieldError(input, errorElement, `${fieldName} is required`);
+    setFieldError(input, errorEl, `${fieldName} is required`);
     return null;
   }
   if (value.length > WORD_MAX_LENGTH) {
-    setFieldError(input, errorElement, "Maximum 40 characters");
+    setFieldError(input, errorEl, "Maximum 40 characters");
     return null;
   }
   if (!/^[A-Za-z]+$/.test(value)) {
-    setFieldError(input, errorElement, "Letters only");
+    setFieldError(input, errorEl, "Letters only");
     return null;
   }
-
-  setFieldError(input, errorElement, "");
+  setFieldError(input, errorEl, "");
   return value;
 }
 
 function validateNumberInput() {
-  const number = elements.numberInput.value.trim();
+  const number = numberInput.value.trim();
   if (!number) {
-    setFieldError(elements.numberInput, elements.numberError, "Number is required");
+    setFieldError(numberInput, numberError, "Number is required");
     return null;
   }
   if (!/^\d+$/.test(number)) {
-    setFieldError(elements.numberInput, elements.numberError, "Numbers only");
+    setFieldError(numberInput, numberError, "Numbers only");
     return null;
   }
-
-  setFieldError(elements.numberInput, elements.numberError, "");
+  setFieldError(numberInput, numberError, "");
   return number;
 }
 
 function validatePersonalizedInputs() {
-  const validFruit = validateLettersInput(elements.fruitInput, elements.fruitError, "Fruit");
-  const validStreet = validateWordInput(elements.streetInput, elements.streetError, "Street");
+  const validFruit = validateLettersInput(fruitInput, fruitError, "Fruit");
+  const validStreet = validateWordInput(streetInput, streetError, "Street");
   const validNumber = validateNumberInput();
 
-  if (!validFruit || !validStreet || !validNumber) {
-    return null;
-  }
+  if (!validFruit || !validStreet || !validNumber) return null;
 
   return { fruit: validFruit, street: validStreet, number: validNumber };
 }
@@ -194,128 +185,126 @@ function validatePersonalizedInputs() {
 function renderClassification(result) {
   const score = Number(result.score || 0);
   const color = colorForScore(score);
-  elements.labelOutput.textContent = result.label || "unknown";
-  elements.labelOutput.style.color = color;
-  elements.labelOutput.style.background = `${color}18`;
-  elements.scoreMeter.style.width = `${score}%`;
-  elements.scoreMeter.style.background = color;
-  elements.scoreOutput.textContent = `${score}/100`;
-  elements.entropyOutput.textContent = `${result.entropy || 0} bits`;
-  elements.lengthOutput.textContent = result.length || 0;
+  labelOutput.textContent = result.label || "unknown";
+  labelOutput.style.color = color;
+  labelOutput.style.background = `${color}18`;
+  scoreMeter.style.width = `${score}%`;
+  scoreMeter.style.background = color;
+  scoreOutput.textContent = `${score}/100`;
+  entropyOutput.textContent = `${result.entropy || 0} bits`;
+  lengthOutput.textContent = result.length || 0;
 
-  renderList(elements.reasonsOutput, result.reasons, "No reasons yet");
-  renderList(elements.suggestionsOutput, result.suggestions, "No suggestions yet");
+  renderList(reasonsOutput, result.reasons, "No reasons yet");
+  renderList(suggestionsOutput, result.suggestions, "No suggestions yet");
 }
 
 function renderError(message) {
-  elements.labelOutput.textContent = "Error";
-  elements.labelOutput.style.color = "#b42318";
-  elements.labelOutput.style.background = "#b4231818";
-  elements.scoreMeter.style.width = "0%";
-  elements.scoreOutput.textContent = "0/100";
-  elements.entropyOutput.textContent = "0";
-  elements.lengthOutput.textContent = "0";
-  renderList(elements.reasonsOutput, [message], "");
-  renderList(elements.suggestionsOutput, [], "No suggestions yet");
-  elements.reasonsOutput.firstElementChild.className = "error";
+  labelOutput.textContent = "Error";
+  labelOutput.style.color = "#b42318";
+  labelOutput.style.background = "#b4231818";
+  scoreMeter.style.width = "0%";
+  scoreOutput.textContent = "0/100";
+  entropyOutput.textContent = "0";
+  lengthOutput.textContent = "0";
+  renderList(reasonsOutput, [message], "");
+  renderList(suggestionsOutput, [], "No suggestions yet");
+  reasonsOutput.firstElementChild.className = "error";
 }
 
-elements.classifyBtn.addEventListener("click", async () => {
+classifyBtn.addEventListener("click", async () => {
   try {
     const password = validatePasswordInput();
     if (!password) return;
 
-    const result = await postJson("/classify", {
-      password
-    });
+    const result = await postJson("/classify", { password });
     renderClassification(result);
-  } catch (error) {
-    renderError(error.message);
+  } catch (err) {
+    renderError(err.message);
   }
 });
 
-elements.passwordInput.addEventListener("input", () => {
-  if (elements.passwordInput.value.length <= PASSWORD_MAX_LENGTH) {
-    setFieldError(elements.passwordInput, elements.passwordError, "");
+passwordInput.addEventListener("input", () => {
+  if (passwordInput.value.length <= PASSWORD_MAX_LENGTH) {
+    setFieldError(passwordInput, passwordError, "");
   }
 });
 
-elements.togglePasswordBtn.addEventListener("click", () => {
-  const hidden = elements.passwordInput.type === "password";
-  elements.passwordInput.type = hidden ? "text" : "password";
-  elements.togglePasswordBtn.textContent = hidden ? "Hide" : "Show";
+togglePasswordBtn.addEventListener("click", () => {
+  const hidden = passwordInput.type === "password";
+  passwordInput.type = hidden ? "text" : "password";
+  togglePasswordBtn.textContent = hidden ? "Hide" : "Show";
 });
 
-elements.generateBtn.addEventListener("click", async () => {
+generateBtn.addEventListener("click", async () => {
   try {
     const result = await postJson("/generate", {
-      length: elements.lengthInput.value,
-      use_upper: elements.upperInput.checked,
-      use_lower: elements.lowerInput.checked,
-      use_digits: elements.digitsInput.checked,
-      use_symbols: elements.symbolsInput.checked
+      length: lengthInput.value,
+      use_upper: upperInput.checked,
+      use_lower: lowerInput.checked,
+      use_digits: digitsInput.checked,
+      use_symbols: symbolsInput.checked
     });
-    elements.generatedOutput.textContent = result.password;
-    setCopyReady(elements.copyGeneratedBtn, true);
+    generatedOutput.textContent = result.password;
+    setCopyReady(copyGeneratedBtn, true);
     renderClassification(result.classification);
-  } catch (error) {
-    renderError(error.message);
+  } catch (err) {
+    renderError(err.message);
   }
 });
 
-elements.fruitInput.addEventListener("input", () => {
-  const removedInvalid = keepLetters(elements.fruitInput);
+fruitInput.addEventListener("input", () => {
+  const removedInvalid = keepLetters(fruitInput);
   if (removedInvalid) {
-    setFieldError(elements.fruitInput, elements.fruitError, "Letters only");
+    setFieldError(fruitInput, fruitError, "Letters only");
     return;
   }
-  validateLettersInput(elements.fruitInput, elements.fruitError, "Fruit");
+  validateLettersInput(fruitInput, fruitError, "Fruit");
 });
 
-elements.streetInput.addEventListener("input", () => {
-  const removedInvalid = keepLettersAndSpaces(elements.streetInput);
+streetInput.addEventListener("input", () => {
+  const removedInvalid = keepLettersAndSpaces(streetInput);
   if (removedInvalid) {
-    setFieldError(elements.streetInput, elements.streetError, "Letters only");
+    setFieldError(streetInput, streetError, "Letters only");
     return;
   }
-  validateWordInput(elements.streetInput, elements.streetError, "Street");
+  validateWordInput(streetInput, streetError, "Street");
 });
 
-elements.numberInput.addEventListener("input", () => {
-  const removedInvalid = keepDigits(elements.numberInput);
+numberInput.addEventListener("input", () => {
+  const removedInvalid = keepDigits(numberInput);
   if (removedInvalid) {
-    setFieldError(elements.numberInput, elements.numberError, "Numbers only");
+    setFieldError(numberInput, numberError, "Numbers only");
     return;
   }
   validateNumberInput();
 });
 
-elements.personalizedBtn.addEventListener("click", async () => {
+personalizedBtn.addEventListener("click", async () => {
   try {
     const payload = validatePersonalizedInputs();
     if (!payload) return;
 
     const result = await postJson("/generate-personalized", payload);
-    elements.personalizedOutput.textContent = result.password;
-    setCopyReady(elements.copyPersonalizedBtn, true);
+    personalizedOutput.textContent = result.password;
+    setCopyReady(copyPersonalizedBtn, true);
     renderClassification(result.classification);
-  } catch (error) {
-    renderError(error.message);
+  } catch (err) {
+    renderError(err.message);
   }
 });
 
-elements.copyGeneratedBtn.addEventListener("click", async () => {
+copyGeneratedBtn.addEventListener("click", async () => {
   try {
-    await copyTextFromOutput(elements.generatedOutput, elements.copyGeneratedBtn);
-  } catch (error) {
-    elements.copyGeneratedBtn.textContent = "Failed";
+    await copyTextFromOutput(generatedOutput, copyGeneratedBtn);
+  } catch {
+    copyGeneratedBtn.textContent = "Failed";
   }
 });
 
-elements.copyPersonalizedBtn.addEventListener("click", async () => {
+copyPersonalizedBtn.addEventListener("click", async () => {
   try {
-    await copyTextFromOutput(elements.personalizedOutput, elements.copyPersonalizedBtn);
-  } catch (error) {
-    elements.copyPersonalizedBtn.textContent = "Failed";
+    await copyTextFromOutput(personalizedOutput, copyPersonalizedBtn);
+  } catch {
+    copyPersonalizedBtn.textContent = "Failed";
   }
 });

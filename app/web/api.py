@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import sys
 from dataclasses import asdict
 from pathlib import Path
@@ -21,18 +19,18 @@ PASSWORD_MAX_LENGTH = 256
 WORD_MAX_LENGTH = 40
 
 
-def _json_error(message: str, status_code: int = 400):
+def json_error(message, status_code=400):
     response = jsonify({"error": message})
     response.status_code = status_code
     return response
 
 
-def _request_json() -> dict:
+def get_request_json():
     data = request.get_json(silent=True)
     return data if isinstance(data, dict) else {}
 
 
-def _classification_payload(result) -> dict:
+def build_classification_payload(result):
     payload = asdict(result)
     leak_matches = payload.pop("leak_matches", [])
     payload["compromised"] = bool(leak_matches)
@@ -40,45 +38,39 @@ def _classification_payload(result) -> dict:
     return payload
 
 
-def _letters_value(data: dict, field_name: str) -> str:
+def validate_letters_and_spaces(data, field_name):
     value = data.get(field_name, "")
     if not isinstance(value, str):
         raise ValueError(f"{field_name} must be a string")
-
     value = value.strip()
     if len(value) > WORD_MAX_LENGTH:
         raise ValueError(f"{field_name} must be 40 characters or fewer")
     if not value or not all(char.isalpha() or char == " " for char in value):
         raise ValueError(f"{field_name} must contain letters only")
-
     return value
 
 
-def _letters_only_value(data: dict, field_name: str) -> str:
+def validate_letters_only(data, field_name):
     value = data.get(field_name, "")
     if not isinstance(value, str):
         raise ValueError(f"{field_name} must be a string")
-
     value = value.strip()
     if len(value) > WORD_MAX_LENGTH:
         raise ValueError(f"{field_name} must be 40 characters or fewer")
     if not value or not value.isalpha():
         raise ValueError(f"{field_name} must contain letters only")
-
     return value
 
 
-def _digits_value(data: dict, field_name: str) -> str:
+def _validate_digits(data, field_name):
     value = data.get(field_name, "")
     if isinstance(value, int):
         value = str(value)
     elif not isinstance(value, str):
         raise ValueError(f"{field_name} must be a number")
-
     value = value.strip()
     if not value.isdigit():
         raise ValueError(f"{field_name} must contain digits only")
-
     return value
 
 
@@ -94,25 +86,24 @@ def index():
 
 @app.post("/classify")
 def classify():
-    data = _request_json()
+    data = get_request_json()
     password = data.get("password", "")
 
     if not isinstance(password, str) or not password:
-        return _json_error("password is required")
+        return json_error("password is required")
     if len(password) > PASSWORD_MAX_LENGTH:
-        return _json_error("password must be 256 characters or fewer")
+        return json_error("password must be 256 characters or fewer")
 
     result = classify_password(
         password,
         check_leaks=bool(data.get("check_leaks", True)),
     )
-
-    return jsonify(_classification_payload(result))
+    return jsonify(build_classification_payload(result))
 
 
 @app.post("/generate")
 def generate():
-    data = _request_json()
+    data = get_request_json()
 
     try:
         password = generate_password(
@@ -122,43 +113,35 @@ def generate():
             use_digits=bool(data.get("use_digits", True)),
             use_symbols=bool(data.get("use_symbols", True)),
         )
-    except (TypeError, ValueError) as error:
-        return _json_error(str(error))
+    except (TypeError, ValueError) as e:
+        return json_error(str(e))
 
     classification = classify_password(password)
 
-    return jsonify(
-        {
-            "password": password,
-            "classification": _classification_payload(classification),
-        }
-    )
+    return jsonify({
+        "password": password,
+        "classification": build_classification_payload(classification),
+    })
 
 
 @app.post("/generate-personalized")
 def generate_personalized():
-    data = _request_json()
+    data = get_request_json()
 
     try:
-        fruit = _letters_only_value(data, "fruit")
-        street = _letters_value(data, "street")
-        number = _digits_value(data, "number")
-        password = generate_personalized_password(
-            fruit,
-            street,
-            number,
-        )
-    except (TypeError, ValueError) as error:
-        return _json_error(str(error))
+        fruit = validate_letters_only(data, "fruit")
+        street = validate_letters_and_spaces(data, "street")
+        number = _validate_digits(data, "number")
+        password = generate_personalized_password(fruit, street, number)
+    except (TypeError, ValueError) as e:
+        return json_error(str(e))
 
     classification = classify_password(password)
 
-    return jsonify(
-        {
-            "password": password,
-            "classification": _classification_payload(classification),
-        }
-    )
+    return jsonify({
+        "password": password,
+        "classification": build_classification_payload(classification),
+    })
 
 
 if __name__ == "__main__":
