@@ -95,11 +95,22 @@ This project is intended to run locally. Passwords are checked on your own machi
 The web API does not return raw leak-match details. It only returns whether a password appears compromised and how many matches were found.
 
 
+## The Problem
 
+Weak passwords are one of the most common causes of security breaches. 
+Users often choose short, predictable, or reused passwords, making them vulnerable to attacks such as brute-force attacks, dictionary attacks, and credential stuffing.
 
+This project aims to help users understand password weaknesses and generate stronger, safer alternatives.
 
+## Research & Background
 
+Existing tools such as password managers primarily focus on generating strong random passwords. However, personalized password generation combined with detailed strength analysis is less common. Our project addresses this gap by introducing a personalized generator that balances memorability and security. Additionally, our system evaluates passwords using entropy estimation, character diversity, pattern detection, and real-world leaked password datasets to provide meaningful feedback.
 
+## Conclusion
+
+Password Suite combines security analysis, real-world data, and both random and personalized password generation to help users create stronger and more secure passwords.
+
+It focuses not only on security, but also on usability, making passwords both safe and memorable.
 
 
 
