@@ -45,6 +45,5 @@ def generate_personalized_password(fruit, street, number):
     part2 = transform_word(street.title())
     return f"{part1}{symbol}{part2}{symbol}{number}"
 
-
 if __name__ == "__main__":
-    print(generate_personalized_password("oring", "Amiryan", 12))
+    main()

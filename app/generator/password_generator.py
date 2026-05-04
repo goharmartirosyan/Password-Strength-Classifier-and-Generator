@@ -32,6 +32,5 @@ def generate_password(length=12, use_upper=True, use_lower=True, use_digits=True
 
     return ''.join(password)
 
-
 if __name__ == "__main__":
-    print(generate_password(16))
+    main()
